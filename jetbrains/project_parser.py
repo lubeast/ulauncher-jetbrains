@@ -22,16 +22,14 @@ class RecentProjectsParser():
         root = ET.parse(file_path).getroot()
 
         recent_projects = root.findall(
-            './/component[@name="RecentProjectsManager"][1]/option[@name="recentPaths"]/list/option'
-        ) + root.findall(
-            './/component[@name="RecentDirectoryProjectsManager"][1]/option[@name="recentPaths"]/list/option'
+            './/component[@name="RecentProjectsManager"][1]/option[@name="additionalInfo"]/map/entry'
         )
 
+        user_home = os.path.expanduser('~')
         result = []
         for project in recent_projects:
             project_title = ''
-            project_path = project.attrib["value"].replace(
-                '$USER_HOME$', os.path.expanduser('~'))
+            project_path = project.get('key').replace('$USER_HOME$', user_home)
             name_file = project_path + '/.idea/.name'
 
             if os.path.exists(name_file):
